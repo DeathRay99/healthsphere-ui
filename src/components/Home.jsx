@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Footer from "./Footer";
 import { TypewriterEffectSmooth } from "./ui/typewriter-effect";
+import { Slideshow } from "./Slideshow";
 
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -115,7 +116,7 @@ export default function HomePage() {
       <main>
         {/* Hero Section */}
         {!isLoggedIn && (
-          <section className="bg-gradient-to-r from-green-500 to-teal-600 text-white py-20">
+          <section className="bg-gradient-to-r from-green-500 to-teal-600 text-white py-4">
             <div className="container mx-auto px-4 flex flex-col items-center text-center">
               <TypewriterEffectSmooth words={words} />
               <p className="text-xl mb-10 max-w-2xl">
@@ -137,6 +138,7 @@ export default function HomePage() {
                 </button>
               </div>
             </div>
+            <Slideshow/>
           </section>
         )}
 
