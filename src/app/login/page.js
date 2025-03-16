@@ -1,10 +1,14 @@
 "use client"
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import useAuthStore from "../store/authStore";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", passwordHash: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { login } = useAuthStore();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,16 +30,19 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("userId", data.userId);
-        localStorage.setItem("role", data.role);
-        setError({ username: "", passwordHash: "" });
+        // localStorage.setItem("username", data.username);
+        // localStorage.setItem("userId", data.userId);
+        // localStorage.setItem("role", data.role);
+        login(data); 
+        setFormData({ username: "", passwordHash: "" });
         alert("Login successful!");
+        router.push('/');
       } else {
         setError(data.error);
       }
     } catch (err) {
-      setError("Something went wrong!");
+        console.log(err.message);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
