@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import useAuthStore from "../store/authStore";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +14,9 @@ const Register = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const router = useRouter();
+
+    const { login } = useAuthStore();
 
     const validateForm = () => {
         let newErrors = {};
@@ -49,7 +54,7 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:9090/auth/register", {
+            const response = await fetch("http://localhost:9090/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -59,16 +64,19 @@ const Register = () => {
                 }),
             });
 
-            const data = await response.text();
+            const data = await response.json();
 
             if (response.ok) {
-                setMessage("Registration successful! Please log in.");
+                login(data);
+                alert("Registration successful! Please complete your profile.");
                 setFormData({ username: "", email: "", passwordHash: "", confirmPassword: "" });
+                router.push('/signup/onboarding');
             } else {
-                setMessage(data);
+                setMessage(data.error);
             }
         } catch (err) {
-            setMessage("Something went wrong!");
+            console.log(err);
+            setMessage("Something went wrong! ", err);
         } finally {
             setLoading(false);
         }
@@ -78,7 +86,7 @@ const Register = () => {
         <div className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white p-6 rounded-lg shadow-md w-96">
                 <h2 className="text-xl font-semibold text-center mb-4">Register</h2>
-                {message && <p className="text-green-500 text-sm text-center">{message}</p>}
+                {message && <p className="text-red-500 text-sm text-center">{message}</p>}
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -126,7 +134,7 @@ const Register = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 transition"
+                        className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 transition hover:cursor-pointer"
                         disabled={loading}
                     >
                         {loading ? "Registering..." : "Register"}
