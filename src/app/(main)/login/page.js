@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
-import useAuthStore from "../store/authStore";
+import useAuthStore from "../../store/authStore";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", passwordHash: "" });
