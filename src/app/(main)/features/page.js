@@ -1,11 +1,11 @@
-// pages/features.js
+
 "use client"
-// pages/features.js
+
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Calendar, Users, MessageCircle, Video } from 'lucide-react';
 
-// Import icons needed for the components
 const Leaf = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M11 20A7 7 0 0 1 4 13c0-3.45 2.71-6.84 6-7.76V4h4v1.24c3.29.92 6 4.31 6 7.76a7 7 0 0 1-7 7z"/>
@@ -331,6 +331,67 @@ export default function Features() {
           </div>
         </div>
       </section>
+      <section id="consultations" className="py-20 px-6 md:px-10 lg:px-20">
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="order-1 lg:order-1 relative">
+        <div className="relative z-10 overflow-hidden rounded-2xl shadow-xl">
+          <img 
+            src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80" 
+            alt="Health consultation" 
+            className="w-full h-auto object-cover"
+            loading="lazy"
+          />
+        </div>
+        
+        <div className="absolute -bottom-10 left-10 glass p-4 rounded-lg shadow-lg animate-float">
+          <div className="flex items-center space-x-4">
+            <div className="h-10 w-10 rounded-full bg-health-100 flex items-center justify-center">
+              <Users className="h-5 w-5 text-health-600" />
+            </div>
+            <div>
+              <div className="font-medium">Expert Team</div>
+              <div className="text-sm text-muted-foreground">certified professionals</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="absolute -z-10 -top-10 -left-10 h-64 w-64 bg-health-200 rounded-full filter blur-3xl opacity-40" />
+      </div>
+      
+      <div className="order-2 lg:order-2">
+        <div className="inline-block px-3 py-1 bg-health-100 text-health-800 rounded-full text-sm font-medium mb-6">
+          <div className="flex items-center">
+            <Calendar className="h-4 w-4 mr-2" />
+            <span>Expert Support</span>
+          </div>
+        </div>
+        <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+          One-on-one <span className="text-health-600">consultations</span> with certified experts
+        </h2>
+        <p className="text-lg text-muted-foreground mb-8">
+          Connect with our certified nutritionists and fitness professionals for personalized guidance tailored to your health journey. Get expert advice, customized recommendations, and ongoing support to help you achieve your wellness goals.
+        </p>
+        
+        <div className="space-y-4 mb-8">
+          {['Personalized one-on-one sessions', '24/7 chat support for quick queries', 'Video or phone consultations', 'Specialized guidance for specific health concerns'].map((item, index) => (
+            <div key={index} className="flex items-start">
+              <div className="h-6 w-6 rounded-full bg-health-100 flex items-center justify-center mr-3 mt-0.5">
+                <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 4L4.5 7.5L11 1" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+        
+        <Button>
+          Book a Consultation
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </Button>
+      </div>
+    </div>
+  </section>
        {/* Footer */}
        <footer className="bg-white">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
