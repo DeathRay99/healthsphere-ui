@@ -113,7 +113,7 @@ export default function OnboardingForm() {
 
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left side - Image and text */}
-        <div className="bg-blue-600 text-white w-full md:w-1/3 p-8 flex flex-col justify-center items-center">
+        <div className="bg-green-600 text-white w-full md:w-1/3 p-8 flex flex-col justify-center items-center">
           <div className="mb-6">
             <Image src="/assets/meal1.jpg" width={300} height={100} alt="meal_image" className="  rounded-2xl object-contain "/>
           </div>
@@ -145,7 +145,7 @@ export default function OnboardingForm() {
               <p className="text-gray-600">Step {currentStep} of 3</p>
               <div className="w-full bg-gray-200 rounded-full h-2.5 mt-3">
                 <div
-                  className="bg-blue-600 h-2.5 rounded-full"
+                  className="bg-green-600 h-2.5 rounded-full"
                   style={{ width: `${(currentStep / 3) * 100}%` }}
                 ></div>
               </div>
@@ -400,7 +400,7 @@ export default function OnboardingForm() {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="ml-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                    className="ml-auto px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                   >
                     Next
                   </button>

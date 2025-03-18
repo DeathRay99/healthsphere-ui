@@ -78,7 +78,7 @@ function NavBar() {
               </Link>
               <Link
                 href="/consultants"
-                className="text-gray-700 hover:text-green-500"
+                className="text-gray-700 hover:text-green-500 hover:cursor-pointer"
               >
                 Contact-Consultant
               </Link>
