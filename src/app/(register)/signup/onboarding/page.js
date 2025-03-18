@@ -2,10 +2,12 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Head from "next/head";
+import useAuthStore from "@/app/store/authStore";
 import Image from "next/image";
 
+
 export default function OnboardingForm() {
+  const { isLoggedIn, initializeAuth } = useAuthStore();
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -30,8 +32,8 @@ export default function OnboardingForm() {
 
   useEffect(() => {
     // Check if user is authenticated
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
+    initializeAuth()
+    if (!isLoggedIn) {
       router.push("/login");
     }
   }, []);

@@ -2,6 +2,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Image from 'next/image';
 
 // Custom icon components to replace Heroicons
@@ -137,12 +138,14 @@ export default function Home() {
 
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-2">
-              <span className="text-white font-bold">h</span>
-            </div>
-            <h1 className="text-2xl font-bold">health<span className="text-green-500">Sphere</span></h1>
+        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
           </div>
+          <Link href="/">
+            <span className="text-2xl font-bold hover:cursor-pointer">health<span className="text-green-500">Sphere</span></span>
+          </Link>
           <nav className="hidden md:flex space-x-8">
             <a href="#features" className="text-gray-700 hover:text-green-500">Features</a>
             <a href="#diet-plans" className="text-gray-700 hover:text-green-500">Diet Plans</a>
