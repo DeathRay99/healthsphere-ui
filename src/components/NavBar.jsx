@@ -24,6 +24,7 @@ function NavBar() {
 
   const handleLogout = () => {
     logout();
+    router.push("/");
   };
 
   return (
@@ -99,7 +100,7 @@ function NavBar() {
               </Link>
               <button
                 onClick={handleLogin}
-                className="text-gray-700 hover:text-green-500"
+                className="text-gray-700 hover:text-green-500 hover:cursor-pointer"
               >
                 Login
               </button>
