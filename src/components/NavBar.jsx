@@ -1,67 +1,134 @@
-"use client"
+"use client";
 
-import React, { useEffect } from 'react'
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import useAuthStore from '@/app/store/authStore';
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import useAuthStore from "@/app/store/authStore";
+import Image from "next/image";
 
 function NavBar() {
+  const router = useRouter();
+  const { isLoggedIn, logout, initializeAuth } = useAuthStore();
 
-const router = useRouter();
-const { isLoggedIn, logout, initializeAuth } = useAuthStore();
+  useEffect(() => {
+    initializeAuth(); // Restore login state on refresh
+  }, []);
 
-useEffect(() => {
-  initializeAuth(); // Restore login state on refresh
-}, []);
-
-
-const handleLogin = () => {
-    router.push('/login');
+  const handleLogin = () => {
+    router.push("/login");
   };
 
   const handleSignup = () => {
-    router.push('/signup');
+    router.push("/signup");
   };
 
   const handleLogout = () => {
     logout();
+    router.push("/");
   };
+
   return (
-    <nav className="bg-blue-600 text-white shadow-lg">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <Link href="/"><span className="hover:cursor-pointer text-xl font-bold">HeathSphere</span></Link>
-          </div>
-          <div className="hidden md:flex space-x-6">
-            <Link href="/" className="hover:text-blue-200">Home</Link>
-            {isLoggedIn ? (
-              <>
-                <Link href="/dashboard" className="hover:text-blue-200">Dashboard</Link>
-                <Link href="/nutrition" className="hover:text-blue-200">Nutrition</Link>
-                <Link href="/fitness" className="hover:text-blue-200">Fitness</Link>
-                <Link href="/profile" className="hover:text-blue-200">Profile</Link>
-                <button onClick={handleLogout} className="hover:text-blue-200">Logout</button>
-              </>
-            ) : (
-              <>
-                <Link href="/features" className="hover:text-blue-200">Features</Link>
-                <Link href="/about" className="hover:text-blue-200">About</Link>
-                <button onClick={handleLogin} className="hover:text-blue-200">Login</button>
-                <button onClick={handleSignup} className="bg-white text-blue-600 px-4 py-1 rounded-md hover:bg-blue-100">Sign Up</button>
-              </>
-            )}
-          </div>
-          <button className="md:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+    <header className="bg-white shadow-sm">
+      <div className="container mx-auto px-4 py-1 flex justify-between items-center">
+        <div className="flex items-center">
+          <Link href="/">
+            <Image
+              src="/assets/logos/healthSphere-logo.png"
+              height={100}
+              width={200}
+              alt="logo"
+              className=" object-contain"
+            />
+          </Link>
         </div>
-      </nav>
-  )
+        <nav className="hidden md:flex space-x-8">
+          <Link href="/" className="text-gray-700 hover:text-green-500">
+            Home
+          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/goals"
+                className="text-gray-700 hover:text-green-500"
+              >
+                My Goals
+              </Link>
+              <Link
+                href="/nutrition"
+                className="text-gray-700 hover:text-green-500"
+              >
+                Meals
+              </Link>
+              <Link
+                href="/fitness"
+                className="text-gray-700 hover:text-green-500"
+              >
+                Workouts
+              </Link>
+              <Link
+                href={`/profile/${localStorage.getItem("userId")}`}
+                className="text-gray-700 hover:text-green-500"
+              >
+                Profile
+              </Link>
+              <Link
+                href="/healthlogs"
+                className="text-gray-700 hover:text-green-500"
+              >
+                Healthlogs
+              </Link>
+              <Link
+                href="/consultants"
+                className="text-gray-700 hover:text-green-500 hover:cursor-pointer"
+              >
+                Contact-Consultant
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/features"
+                className="text-gray-700 hover:text-green-500"
+              >
+                Features
+              </Link>
+              <Link
+                href="/about"
+                className="text-gray-700 hover:text-green-500"
+              >
+                About
+              </Link>
+              <button
+                onClick={handleLogin}
+                className="text-gray-700 hover:text-green-500 hover:cursor-pointer"
+              >
+                Login
+              </button>
+            </>
+          )}
+        </nav>
+        {isLoggedIn ? (
+          <div className="md:block">
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-colors hover:cursor-pointer"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div className="md:block">
+            <button
+              onClick={handleSignup}
+              className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors hover:cursor-pointer"
+            >
+              Get Started
+            </button>
+          </div>
+        )}
+      </div>
+    </header>
+  );
 }
 
-export default NavBar
+export default NavBar;

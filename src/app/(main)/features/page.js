@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/app/features/page.js
 // pages/features.js
 "use client";
 // pages/features.js
@@ -6,6 +7,16 @@ import Head from "next/head";
 import Link from "next/link";
 import { Calendar, Users, MessageCircle, Video } from 'lucide-react';
 // Import icons needed for the components
+=======
+
+"use client"
+
+import React from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import { Calendar, Users, MessageCircle, Video } from 'lucide-react';
+
+>>>>>>> a8d6ba2fcb6960df802fa652b5ea8d0eac62acef:src/app/(main)/features/page.js
 const Leaf = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -503,8 +514,13 @@ export default function Features() {
       </div>
     </div>
   </section>
+<<<<<<< HEAD:src/app/features/page.js
       {/* Footer */}
       <footer className="bg-white">
+=======
+       {/* Footer */}
+       <footer className="bg-white">
+>>>>>>> a8d6ba2fcb6960df802fa652b5ea8d0eac62acef:src/app/(main)/features/page.js
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="border-t border-gray-200 pt-8 md:flex md:items-center md:justify-between">
             <div className="flex space-x-6 md:order-2">

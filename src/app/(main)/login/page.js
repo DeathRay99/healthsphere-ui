@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import { useState } from "react";
-import { useRouter } from 'next/navigation';
-import useAuthStore from "../store/authStore";
+import { useRouter } from "next/navigation";
+import useAuthStore from "../../store/authStore";
+import Link from "next/link";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", passwordHash: "" });
@@ -20,7 +21,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:9090/auth/login", {
+      const response = await fetch("http://localhost:9090/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -33,15 +34,15 @@ const Login = () => {
         // localStorage.setItem("username", data.username);
         // localStorage.setItem("userId", data.userId);
         // localStorage.setItem("role", data.role);
-        login(data); 
+        login(data);
         setFormData({ username: "", passwordHash: "" });
         alert("Login successful!");
-        router.push('/');
+        router.push("/");
       } else {
         setError(data.error);
       }
     } catch (err) {
-        console.log(err.message);
+      console.log(err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -79,6 +80,9 @@ const Login = () => {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+          <p className="text-center mt-0.5"> <Link href="/signup" className=" text-blue-500 text-sm underline  ">
+          Dont have an Account? Sign Up </Link></p>
+           
         </form>
       </div>
     </div>
