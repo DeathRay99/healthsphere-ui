@@ -65,7 +65,7 @@ function NavBar() {
                 Workouts
               </Link>
               <Link
-                href="/profile"
+                href={`/profile/${localStorage.getItem("userId")}`}
                 className="text-gray-700 hover:text-green-500"
               >
                 Profile
