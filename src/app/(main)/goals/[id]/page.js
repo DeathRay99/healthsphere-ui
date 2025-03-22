@@ -13,7 +13,7 @@ function goals() {
   const { isLoggedIn, initializeAuth } = useAuthStore();
   const [goals, setGoals] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useAuthRedirect(id);
 
@@ -25,6 +25,8 @@ function goals() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Role": localStorage.getItem("role"),
+            "UserId": id,
           },
           body: JSON.stringify(formData),
         }
@@ -52,58 +54,76 @@ function goals() {
       if (isLoggedIn && localStorage.getItem("userId") == id) {
         try {
           const response = await fetch(
-            `http://localhost:9090/api/fitnessGoals/${id}`
+            `http://localhost:9090/api/fitnessGoals/${id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Role": localStorage.getItem("role"),
+                "UserId": id,
+              },
+            }
           );
           const data = await response.json();
 
           if (response.ok) {
             console.log(data);
-            setGoals(data);
+            setGoals(data.fitnessGoals);
           } else {
             alert(data.err);
           }
         } catch (e) {
           console.log("something went wrong", e.message);
-        }finally {
-          setLoading(false); 
+        } finally {
+          setLoading(false);
         }
       }
-      return;
     };
     fetchGoals();
-  }, [id, refreshTrigger]);
+  }, [id, refreshTrigger, isLoggedIn]);
 
   const EmptyState = () => (
     <div className="text-center py-16 bg-gray-50 rounded-lg">
-      <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Fitness Goals Found</h3>
+      <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+        No Fitness Goals Found
+      </h3>
       <p className="text-gray-500 mb-8 max-w-md mx-auto">
-        Start your fitness journey today by adding your first goal. Track your progress and stay motivated!
+        Start your fitness journey today by adding your first goal. Track your
+        progress and stay motivated!
       </p>
-
     </div>
   );
 
   const LoadingState = () => (
     <div className="flex justify-center items-center py-20">
-      <Loader/>
-      <span className="ml-3 text-lg text-gray-700">Loading your fitness goals...</span>
+      <Loader />
+      <span className="ml-3 text-lg text-gray-700">
+        Loading your fitness goals...
+      </span>
     </div>
   );
 
   return (
     <div>
       <div id="fitness-form">
-        <FitnessGoalForm userId={id} onSubmit={onSubmit} setRefreshTrigger={setRefreshTrigger} />
+        <FitnessGoalForm
+          userId={id}
+          onSubmit={onSubmit}
+          setRefreshTrigger={setRefreshTrigger}
+        />
       </div>
       <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-6xl mx-auto mt-8">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">
           Your Fitness Goals
         </h2>
-        
+
         {loading ? (
           <LoadingState />
         ) : goals && goals.length > 0 ? (
-          <GoalsTable setGoals={setGoals} goals={goals} setRefreshTrigger={setRefreshTrigger} />
+          <GoalsTable
+            setGoals={setGoals}
+            goals={goals}
+            setRefreshTrigger={setRefreshTrigger}
+          />
         ) : (
           <EmptyState />
         )}

@@ -23,8 +23,10 @@ function UserProfile({ userData }) {
       const response = await fetch(`http://localhost:9090/api/users/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
-        },
+            "Content-Type": "application/json",
+            "Role": localStorage.getItem("role"),
+            "UserId": id,
+          },
         body: JSON.stringify({
           height: formData.height,
           weight: formData.weight,

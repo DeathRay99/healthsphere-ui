@@ -8,6 +8,24 @@ const WorkoutCard = ({workout}) => {
     day: 'numeric'
   });
 
+  // Function to determine difficulty badge color
+  const getDifficultyBadgeClasses = (level) => {
+    switch(level.toLowerCase()) {
+      case 'beginner':
+      case 'easy':
+        return 'bg-green-100 text-green-800';
+      case 'intermediate':
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'advanced':
+      case 'hard':
+      case 'expert':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <div className="max-w-md rounded-lg overflow-hidden shadow-lg bg-white">
       {/* Video Thumbnail Area */}
@@ -37,7 +55,7 @@ const WorkoutCard = ({workout}) => {
           <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
             {workout.exerciseType}
           </span>
-          <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded ${getDifficultyBadgeClasses(workout.difficultyLevel)}`}>
             {workout.difficultyLevel}
           </span>
         </div>
