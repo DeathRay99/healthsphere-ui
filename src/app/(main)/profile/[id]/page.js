@@ -3,6 +3,7 @@ import UserProfile from "@/components/UserProfile";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import useAuthStore from "@/app/store/authStore";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 function Profile() {
   const router = useRouter();
@@ -10,13 +11,7 @@ function Profile() {
   const [user, setUser] = useState(null);
   const { isLoggedIn, initializeAuth } = useAuthStore();
 
-  useEffect(() => {
-    // Check if user is authenticated
-    initializeAuth();
-    if (!isLoggedIn && localStorage.getItem("userId") != id) {
-      router.push("/login");
-    }
-  }, [id]);
+  useAuthRedirect(id);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,10 +30,9 @@ function Profile() {
           console.log("something went wrong", e.message);
         }
       }
-      return;
     };
     fetchUser();
-  }, [id]);
+  }, [id,isLoggedIn]);
 
   return user ? (
     <UserProfile userData={user} />
