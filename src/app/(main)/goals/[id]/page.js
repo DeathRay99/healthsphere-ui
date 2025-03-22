@@ -5,22 +5,17 @@ import { useRouter, useParams } from "next/navigation";
 import useAuthStore from "@/app/store/authStore";
 import React from "react";
 import GoalsTable from "@/components/GoalsTable";
+import Loader from "@/components/Loader";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 function goals() {
-  const router = useRouter();
   const { id } = useParams();
   const { isLoggedIn, initializeAuth } = useAuthStore();
   const [goals, setGoals] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [loading, setLoading] = useState(true); 
 
-  useEffect(() => {
-    // Check if user is authenticated
-    initializeAuth();
-    if (!isLoggedIn && localStorage.getItem("userId") != id) {
-      router.push("/login");
-    }
-  }, [id]);
+  useAuthRedirect(id);
 
   const onSubmit = async (formData, setFormData) => {
     try {
@@ -90,7 +85,7 @@ function goals() {
 
   const LoadingState = () => (
     <div className="flex justify-center items-center py-20">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <Loader/>
       <span className="ml-3 text-lg text-gray-700">Loading your fitness goals...</span>
     </div>
   );

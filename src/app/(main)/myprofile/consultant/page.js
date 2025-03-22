@@ -29,7 +29,6 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center">
             <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">
-              h
             </div>
             <span className="ml-2 font-bold text-lg">
               <span>health</span>

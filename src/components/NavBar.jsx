@@ -54,13 +54,13 @@ function NavBar() {
                 My Goals
               </Link>
               <Link
-                href="/nutrition"
+                href={`/meals/${localStorage.getItem("userId")}`}
                 className="text-gray-700 hover:text-green-500"
               >
                 Meals
               </Link>
               <Link
-                href="/fitness"
+                href={`/workouts/${localStorage.getItem("userId")}`}
                 className="text-gray-700 hover:text-green-500"
               >
                 Workouts
