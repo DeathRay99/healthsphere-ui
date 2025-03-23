@@ -1,7 +1,6 @@
-
 import React from 'react'
 import Link from 'next/link';
-
+import { Search, Phone, Mail, FileText } from "lucide-react";
 function ConsultantTable({ consultants, searchTerm }) {
     return (
       <>

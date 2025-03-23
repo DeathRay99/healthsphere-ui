@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 function UserProfile({ userData }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(userData);
+  const [errors, setErrors] = useState({});
   const { id } = useParams();
 
   const handleChange = (e) => {
@@ -15,10 +16,46 @@ function UserProfile({ userData }) {
       ...formData,
       [name]: value,
     });
+    
+    // Clear error when field is edited
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: null
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Validate height
+    if (formData.height <= 0) {
+      newErrors.height = "Height must be a positive number";
+    }
+    
+    // Validate weight
+    if (formData.weight <= 0) {
+      newErrors.weight = "Weight must be a positive number";
+    }
+    
+    // Validate phone number
+    if (formData.phoneNumber && formData.phoneNumber.startsWith('-')) {
+      newErrors.phoneNumber = "Phone number cannot be negative";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+    
     try {
       const response = await fetch(`http://localhost:9090/api/users/${id}`, {
         method: "PUT",
@@ -129,8 +166,10 @@ function UserProfile({ userData }) {
                 name="height"
                 value={formData.height}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`w-full px-3 py-2 border ${errors.height ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500`}
+                min="1"
               />
+              {errors.height && <p className="text-red-500 text-xs mt-1">{errors.height}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -141,8 +180,10 @@ function UserProfile({ userData }) {
                 name="weight"
                 value={formData.weight}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`w-full px-3 py-2 border ${errors.weight ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500`}
+                min="1"
               />
+              {errors.weight && <p className="text-red-500 text-xs mt-1">{errors.weight}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -153,8 +194,9 @@ function UserProfile({ userData }) {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`w-full px-3 py-2 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500`}
               />
+              {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

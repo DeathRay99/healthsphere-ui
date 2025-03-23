@@ -7,6 +7,19 @@ jest.mock("next/navigation", () => ({
   useParams: () => ({ id: "123" }),
 }));
 
+  global.fetch = jest.fn();
+  global.alert = jest.fn();
+  
+  // Mock localStorage
+  const localStorageMock = {
+    getItem: jest.fn(),
+  };
+  Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+  Object.defineProperty(window, 'location', {
+    value: { reload: jest.fn() },
+    writable: true
+  });
+
 // Mock ShowProfile component to ensure consistent rendering for tests
 jest.mock("../components/ShowProfile", () => {
   return function MockShowProfile({ userData }) {
@@ -59,11 +72,63 @@ describe("UserProfile Component", () => {
 
     expect(screen.getByText("Profile Information")).toBeInTheDocument();
     
+    // More flexible way to test for name content
     expect(screen.getByTestId("full-name")).toHaveTextContent("John Doe");
     
     expect(screen.getByText("Male")).toBeInTheDocument();
     expect(screen.getByText("1234567890")).toBeInTheDocument();
     expect(screen.getByText("123 Street, City")).toBeInTheDocument();
+  });
+
+  test('validates form with negative height value', async () => {
+    render(<UserProfile userData={mockUserData} />);
+    
+    fireEvent.click(screen.getByText('Edit Profile'));
+    
+    const heightInput = screen.getByDisplayValue('180');
+    fireEvent.change(heightInput, { target: { value: '-5' } });
+    
+    const submitButton = screen.getByText('Save Changes');
+    fireEvent.click(submitButton);
+    
+    // Wait for the error message to appear in the DOM
+    await waitFor(() => {
+      expect(screen.getByText("Height must be a positive number")).toBeInTheDocument();
+    });
+    
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  test('validates form with negative weight value', () => {
+    render(<UserProfile userData={mockUserData} />);
+    
+    fireEvent.click(screen.getByText('Edit Profile'));
+
+    const weightInput = screen.getByDisplayValue('75');
+    
+    fireEvent.change(weightInput, { target: { value: '-10' } });
+    
+    const submitButton = screen.getByText('Save Changes');
+    fireEvent.click(submitButton);
+    
+    expect(screen.getByText("Weight must be a positive number")).toBeInTheDocument();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test('validates form with negative phone number', () => {
+    render(<UserProfile userData={mockUserData} />);
+    
+    fireEvent.click(screen.getByText('Edit Profile'));
+    
+    // We can use getByDisplayValue since we know the initial value
+    const phoneInput = screen.getByDisplayValue('1234567890');
+    fireEvent.change(phoneInput, { target: { value: '-1234567890' } });
+    
+    const submitButton = screen.getByText('Save Changes');
+    fireEvent.click(submitButton);
+    
+    expect(screen.getByText("Phone number cannot be negative")).toBeInTheDocument();
+    expect(fetch).not.toHaveBeenCalled();
   });
 
   it("renders headers correctly", () => {
