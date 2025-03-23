@@ -21,8 +21,19 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.startDate && formData.targetDate && formData.startDate >= formData.targetDate) {
       alert("Target date must be greater than the start date.");
+      return;
+    }
+
+    if (formData.targetWeight <= 0) {
+      alert("Target weight cannot be zero or negative.");
+      return;
+    }
+
+    if (formData.targetBodyFat <= 0) {
+      alert("Body fat percentage cannot be zero or negative.");
       return;
     }
 
@@ -39,7 +50,6 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
     <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-7xl mx-auto mt-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Add a new Fitness Goal</h2>
       <form onSubmit={handleSubmit} className="w-[95%] mx-auto grid grid-cols-2 md:grid-cols-6 gap-2 items-center">
-        {/* Goal Type */}
         <div>
           <label className="block text-sm font-medium text-gray-700">Goal Type</label>
           <select
@@ -64,7 +74,6 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
           </select>
         </div>
 
-        {/* Target Weight */}
         <div>
           <label className="block text-sm font-medium text-gray-700">Target Weight (kg)</label>
           <input
@@ -76,10 +85,10 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
           />
         </div>
 
-        {/* Target Body Fat */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Target Body Fat (%)</label>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="targetBodyFat" >Target Body Fat (%)</label>
           <input
+            id="targetBodyFat"
             type="number"
             name="targetBodyFat"
             value={formData.targetBodyFat}
@@ -88,7 +97,6 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
           />
         </div>
 
-        {/* Start Date */}
         <div>
           <label className="block text-sm font-medium text-gray-700">Start Date</label>
           <input
@@ -100,7 +108,6 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
           />
         </div>
 
-        {/* Target Date */}
         <div>
           <label className="block text-sm font-medium text-gray-700">Target Date</label>
           <input
@@ -112,7 +119,6 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
           />
         </div>
 
-        {/* Submit Button */}
         <div className="self-end">
           <button
             type="submit"
