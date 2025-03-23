@@ -137,10 +137,72 @@
 //     </div>
 //   );
 // }
+
+
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { Search, Phone, Mail, FileText } from "lucide-react";
+// import ConsultantTable from "@/components/ConsultantTable";
+// import SearchBar from "@/components/SearchBar";
+
+// export default function Consultants() {
+//   const [consultants, setConsultants] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     fetchConsultants();
+//   }, []);
+
+//   const fetchConsultants = async () => {
+//     try {
+//       const response = await fetch("http://localhost:9090/api/consultants");
+//       if (!response.ok) {
+//         throw new Error("Failed to fetch consultants");
+//       }
+//       const data = await response.json();
+//       setConsultants(data);
+//     } catch (error) {
+//       console.error("Error fetching consultants:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const filteredConsultants = consultants.filter((consultant) => {
+//     const fullName = `${consultant.firstName} ${consultant.lastName}`.toLowerCase();
+//     const designation = consultant.designation.toLowerCase();
+//     const email = consultant.email.toLowerCase();
+//     const search = searchTerm.toLowerCase();
+//     return (
+//       fullName.includes(search) ||
+//       designation.includes(search) ||
+//       email.includes(search)
+//     );
+//   });
+
+//   return (
+//     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-green-100 to-white min-h-screen">
+//       <h1 className="text-3xl font-semibold text-green-700 text-center mb-6">
+//         Consultants
+//       </h1>
+//       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+//       {loading ? (
+//         <div className="flex justify-center items-center py-8">
+//            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+//         </div>
+//       ) : (
+//         <ConsultantTable consultants={filteredConsultants} searchTerm={searchTerm} />
+//       )}
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Phone, Mail, FileText } from "lucide-react";
+import { Search } from "lucide-react";
 import ConsultantTable from "@/components/ConsultantTable";
 import SearchBar from "@/components/SearchBar";
 
@@ -148,6 +210,7 @@ export default function Consultants() {
   const [consultants, setConsultants] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [userRole] = useState("ADMIN"); // Set the role dynamically (e.g., based on user login)
 
   useEffect(() => {
     fetchConsultants();
@@ -155,16 +218,84 @@ export default function Consultants() {
 
   const fetchConsultants = async () => {
     try {
-      const response = await fetch("http://localhost:9090/api/consultants");
+      const response = await fetch("http://localhost:9090/api/consultants", {
+        headers: {
+          Role: userRole, // Send the Role header
+        },
+      });
       if (!response.ok) {
-        throw new Error("Failed to fetch consultants");
+        throw new Error("Failed to fetch consultants. Please check permissions.");
       }
       const data = await response.json();
       setConsultants(data);
     } catch (error) {
-      console.error("Error fetching consultants:", error);
+      console.error("Error fetching consultants:", error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddConsultant = async (consultant) => {
+    try {
+      const response = await fetch("http://localhost:9090/api/consultants", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Role: userRole, // Send the Role header
+        },
+        body: JSON.stringify(consultant),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.response);
+        fetchConsultants();
+      } else {
+        alert(data.err);
+      }
+    } catch (error) {
+      console.error("Error adding consultant:", error.message);
+    }
+  };
+
+  const handleUpdateConsultant = async (consultantId, updatedConsultant) => {
+    try {
+      const response = await fetch(`http://localhost:9090/api/consultants/${consultantId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Role: userRole, // Send the Role header
+        },
+        body: JSON.stringify(updatedConsultant),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.response);
+        fetchConsultants();
+      } else {
+        alert(data.err);
+      }
+    } catch (error) {
+      console.error("Error updating consultant:", error.message);
+    }
+  };
+
+  const handleDeleteConsultant = async (consultantId) => {
+    try {
+      const response = await fetch(`http://localhost:9090/api/consultants/${consultantId}`, {
+        method: "DELETE",
+        headers: {
+          Role: userRole, // Send the Role header
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.response);
+        fetchConsultants();
+      } else {
+        alert(data.err);
+      }
+    } catch (error) {
+      console.error("Error deleting consultant:", error.message);
     }
   };
 
@@ -188,10 +319,17 @@ export default function Consultants() {
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       {loading ? (
         <div className="flex justify-center items-center py-8">
-           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
         </div>
       ) : (
-        <ConsultantTable consultants={filteredConsultants} searchTerm={searchTerm} />
+        <ConsultantTable
+          consultants={filteredConsultants}
+          searchTerm={searchTerm}
+          onAdd={handleAddConsultant}
+          onUpdate={handleUpdateConsultant}
+          onDelete={handleDeleteConsultant}
+          userRole={userRole} // Pass the role for UI customization
+        />
       )}
     </div>
   );
