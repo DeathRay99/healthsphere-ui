@@ -1,10 +1,10 @@
-"use client";
-
+'use client';
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/store/authStore";
 import Image from "next/image";
+//import HealthLogsPage from "@/app/(main)/healthlogs/page";
 
 function NavBar() {
   const router = useRouter();
@@ -72,7 +72,7 @@ function NavBar() {
                 Profile
               </Link>
               <Link
-                href="/healthlogs"
+                href={`/healthlogs/${localStorage.getItem("userId")}`}
                 className="text-gray-700 hover:text-green-500"
               >
                 Healthlogs
