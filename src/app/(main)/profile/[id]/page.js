@@ -17,12 +17,21 @@ function Profile() {
     const fetchUser = async () => {
       if (isLoggedIn && localStorage.getItem("userId") == id) {
         try {
-          const response = await fetch(`http://localhost:9090/api/users/${id}`);
+          const response = await fetch(
+            `http://localhost:9090/api/users/${id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Role": localStorage.getItem("role"),
+                "UserId": id,
+              },
+            }
+          );
           const data = await response.json();
 
           if (response.ok) {
             console.log(data);
-            setUser(data);
+            setUser(data.user);
           } else {
             alert(data.err);
           }
@@ -32,7 +41,7 @@ function Profile() {
       }
     };
     fetchUser();
-  }, [id,isLoggedIn]);
+  }, [id, isLoggedIn]);
 
   return user ? (
     <UserProfile userData={user} />

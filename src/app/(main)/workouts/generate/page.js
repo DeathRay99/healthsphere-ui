@@ -3,6 +3,7 @@ import React from 'react'
 import WorkoutCard from '@/components/WorkoutCard'
 import { useState, useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
+import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 function generateWorkouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -15,9 +16,11 @@ function generateWorkouts() {
   const userId = searchParams.get("userId");
   const goalId = searchParams.get("goalId");
 
+  useAuthRedirect(userId);
+
   // Load existing workouts and check generation eligibility on component mount
   useEffect(() => {
-    // Attempt to load workouts for this user/goal from API
+    
     const fetchUserWorkouts = async () => {
       try {
         const response = await fetch(

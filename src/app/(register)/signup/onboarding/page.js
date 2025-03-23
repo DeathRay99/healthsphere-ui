@@ -1,10 +1,9 @@
 // pages/onboarding.js
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/store/authStore";
 import Image from "next/image";
-
 
 export default function OnboardingForm() {
   const { isLoggedIn, initializeAuth } = useAuthStore();
@@ -32,7 +31,7 @@ export default function OnboardingForm() {
 
   useEffect(() => {
     // Check if user is authenticated
-    initializeAuth()
+    initializeAuth();
     if (!isLoggedIn) {
       router.push("/login");
     }
@@ -45,7 +44,6 @@ export default function OnboardingForm() {
       [name]: value,
     }));
   };
-
 
   const requiredFields = {
     1: ["firstName", "lastName", "dateOfBirth", "gender", "height", "weight"],
@@ -71,7 +69,6 @@ export default function OnboardingForm() {
     }
   };
 
-
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
   };
@@ -83,18 +80,22 @@ export default function OnboardingForm() {
 
     try {
       const userId = localStorage.getItem("userId");
-      console.log(formData)
+      console.log(formData);
 
-      const response = await fetch(`http://localhost:9090/api/users/${userId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          user_id: userId,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:9090/api/users/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Role": localStorage.getItem("role"),
+          },
+          body: JSON.stringify({
+            ...formData,
+            user_id: userId,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save profile data");
@@ -110,12 +111,17 @@ export default function OnboardingForm() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left side - Image and text */}
         <div className="bg-green-600 text-white w-full md:w-1/3 p-8 flex flex-col justify-center items-center">
           <div className="mb-6">
-            <Image src="/assets/meal1.jpg" width={300} height={100} alt="meal_image" className="  rounded-2xl object-contain "/>
+            <Image
+              src="/assets/meal1.jpg"
+              width={300}
+              height={100}
+              alt="meal_image"
+              className="  rounded-2xl object-contain "
+            />
           </div>
           <h1 className="text-3xl font-bold mb-4 text-center">
             Your Journey to Better Health Starts Here
