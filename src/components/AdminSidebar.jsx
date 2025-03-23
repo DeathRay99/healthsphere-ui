@@ -12,9 +12,9 @@ export default function Sidebar() {
       <nav className="mt-6">
         {[{ href: '/adminView', icon: Home, label: 'Dashboard' },
           { href: '/adminView/users', icon: Users, label: 'Users' },
-          { href: '/admin/meals', icon: Coffee, label: 'Meals' },
-          { href: '/admin/workouts', icon: Activity, label: 'Workouts' },
-          { href: '/admin/consultants', icon: UserCheck, label: 'Consultants' },
+          { href: '/adminView/Meals', icon: Coffee, label: 'Meals' },
+          { href: '/adminView/Workout', icon: Activity, label: 'Workouts' },
+          { href: '/adminView/Consultant', icon: UserCheck, label: 'Consultants' },
          ].map(({ href, icon: Icon, label }) => (
             <div key={label} className="px-4 py-2 hover:bg-green-800 transition-colors duration-200">
               <Link href={href} className="flex items-center text-white">
