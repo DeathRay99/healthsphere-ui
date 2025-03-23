@@ -695,6 +695,47 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
   };
 
   // Handle form submission
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch("http://localhost:9090/healthLogs", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         ...healthLog,
+  //         userId, // Include userId in the payload
+  //       }),
+  //     });
+
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       alert(data.response);
+  //       setHealthLog({
+  //         breakfast: null,
+  //         lunch: null,
+  //         dinner: null,
+  //         exerciseId: null,
+  //         weight: "",
+  //         sleep: "",
+  //         waterIntake: "",
+  //         bpSystolic: "",
+  //         bpDiastolic: "",
+  //         heartRate: "",
+  //         calories: 0,
+  //         protein: 0,
+  //         carbs: 0,
+  //         fats: 0,
+  //       });
+  //       onLogSubmitted(); // Refresh logs after submission
+  //     } else {
+  //       alert(data.err);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting health log:", error.message);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -708,34 +749,45 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
           userId, // Include userId in the payload
         }),
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert(data.response);
-        setHealthLog({
-          breakfast: null,
-          lunch: null,
-          dinner: null,
-          exerciseId: null,
-          weight: "",
-          sleep: "",
-          waterIntake: "",
-          bpSystolic: "",
-          bpDiastolic: "",
-          heartRate: "",
-          calories: 0,
-          protein: 0,
-          carbs: 0,
-          fats: 0,
-        });
-        onLogSubmitted(); // Refresh logs after submission
-      } else {
-        alert(data.err);
+  
+      // Check Content-Type to ensure it's JSON
+      const contentType = response.headers.get("Content-Type");
+      if (!response.ok) {
+        let errorMessage = "An unexpected error occurred.";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.err || errorMessage;
+        } else {
+          errorMessage = await response.text(); // Fallback for plain text errors
+        }
+        throw new Error(errorMessage);
       }
+  
+      const data = await response.json(); // Parse the JSON response
+      alert(data.response); // Display success message
+      setHealthLog({
+        breakfast: null,
+        lunch: null,
+        dinner: null,
+        exerciseId: null,
+        weight: "",
+        sleep: "",
+        waterIntake: "",
+        bpSystolic: "",
+        bpDiastolic: "",
+        heartRate: "",
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0,
+      });
+      onLogSubmitted(); // Refresh logs after submission
     } catch (error) {
       console.error("Error submitting health log:", error.message);
+      alert(error.message); // Display error message
     }
   };
+  
 
   return (
     <form className="space-y-6">
