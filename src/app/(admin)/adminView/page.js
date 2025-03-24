@@ -10,6 +10,7 @@ export default function AdminView() {
   const [loading, setLoading] = useState(true);
   const [workoutData, setWorkoutData] = useState(null);
   const [dietData, setDietData] = useState(null);
+  const [consultantData, setConsultantData] = useState(null);
 
   useAdminRedirect();
 
@@ -28,7 +29,6 @@ export default function AdminView() {
       );
       const data = await response.json();
       if (response.ok) {
-        console.log(data);
         setWorkoutData(data.workoutRecommendations);
       } else alert(data.err);
     } catch (err) {
@@ -52,8 +52,26 @@ export default function AdminView() {
       );
       const data = await response.json();
       if (response.ok) {
-        console.log(data);
         setDietData(data.dietRecommendations);
+      } else alert(data.err);
+    } catch (err) {
+      console.log("some error !!", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchConsultants = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:9090/api/consultants`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setConsultantData(data);
       } else alert(data.err);
     } catch (err) {
       console.log("some error !!", err.message);
@@ -65,6 +83,7 @@ export default function AdminView() {
   useEffect(() => {
     fetchWorkoutRecommendations();
     fetchDietRecommendations();
+    fetchConsultants();
   }, []);
 
   return (
@@ -73,7 +92,15 @@ export default function AdminView() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopNav />
         <main className="flex-1 overflow-y-auto p-6">
-          {loading ? <Loader /> : <DashboardOverview dietData={dietData} workoutData={workoutData} />}
+          {loading || !dietData || !workoutData || !consultantData? (
+            <Loader />
+          ) : (
+            <DashboardOverview
+              dietData={dietData}
+              workoutData={workoutData}
+              consultantData={consultantData}
+            />
+          )}
         </main>
       </div>
     </div>

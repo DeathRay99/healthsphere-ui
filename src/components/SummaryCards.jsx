@@ -2,13 +2,13 @@ import React from "react";
 import { Users, Activity, Coffee, UserCheck } from "lucide-react";
 
 
-export default function SummaryCards({dietCount,workoutCount}) {
+export default function SummaryCards({dietCount,workoutCount, consultantCount}) {
 
   const summaryData = [
     { icon: Users, title: "Total Users", value: "1,250" },
     { icon: Coffee, title: "Total Meals Generated", value: dietCount },
     { icon: Activity, title: "Total Workouts Generated", value: workoutCount },
-    { icon: UserCheck, title: "Active Consultants", value: "120" },
+    { icon: UserCheck, title: "Active Consultants", value: consultantCount },
   ];
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
