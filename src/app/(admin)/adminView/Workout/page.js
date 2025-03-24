@@ -269,114 +269,342 @@
 //     </div>
 //   );
 // }
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import {
+//   Activity,
+//   Filter,
+//   Search,
+//   ChevronDown,
+//   ChevronUp,
+//   RefreshCw,
+//   AlertCircle,
+// } from "lucide-react";
+// import Head from "next/head";
+
+// export default function WorkoutsPage() {
+//   const [workouts, setWorkouts] = useState([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [sortColumn, setSortColumn] = useState(null);
+//   const [sortDirection, setSortDirection] = useState("asc");
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filterType, setFilterType] = useState("all");
+
+//   // Fetch workouts on initial render
+//   useEffect(() => {
+//     fetchWorkouts();
+//   }, []);
+
+//   // Fetch workouts from API
+//   const fetchWorkouts = async () => {
+//     setIsLoading(true);
+//     try {
+//       const response = await fetch(
+//         "http://localhost:9090/api/workoutRecommendations",
+//         {
+//           headers: {
+//             "Content-Type": "application/json",
+//             Role: "ADMIN", // Send Role for admin access
+//           },
+//         }
+//       );
+
+//       if (!response.ok) {
+//         throw new Error(`Error ${response.status}: ${response.statusText}`);
+//       }
+
+//       const data = await response.json();
+//       console.log("Fetched Workouts Data:", data); // Log the response data
+//       setWorkouts(data.workoutRecommendations || []); // Ensure proper structure
+//       console.log("Fetched Workouts Data:", data);
+// console.log("Set Workouts State:", data.workoutRecommendations || []);
+
+//       setError(null);
+//     } catch (err) {
+//       console.error("Error fetching workout recommendations:", err.message);
+//       setError(err.message);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   // Handle sorting by columns
+//   const handleSort = (column) => {
+//     if (sortColumn === column) {
+//       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+//     } else {
+//       setSortColumn(column);
+//       setSortDirection("asc");
+//     }
+//   };
+
+//   // Get sorting icons
+//   const getSortIcon = (column) => {
+//     if (sortColumn !== column) return null;
+//     return sortDirection === "asc" ? (
+//       <ChevronUp className="inline ml-1 w-4 h-4" />
+//     ) : (
+//       <ChevronDown className="inline ml-1 w-4 h-4" />
+//     );
+//   };
+
+//   // Get sorted, filtered, and searched workouts
+//   // const getSortedAndFilteredWorkouts = () => {
+//   //   let filteredWorkouts = [...workouts];
+
+//   //   // Apply search filter
+//   //   if (searchTerm) {
+//   //     filteredWorkouts = filteredWorkouts.filter((workout) =>
+//   //       workout.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//   //       workout.type?.toLowerCase().includes(searchTerm.toLowerCase())
+//   //     );
+//   //   }
+
+//   //   // Apply type filter
+//   //   if (filterType !== "all") {
+//   //     filteredWorkouts = filteredWorkouts.filter(
+//   //       (workout) => workout.type?.toLowerCase() === filterType.toLowerCase()
+//   //     );
+//   //   }
+
+//   //   // Apply sorting
+//   //   if (sortColumn) {
+//   //     filteredWorkouts.sort((a, b) => {
+//   //       const aValue = a[sortColumn];
+//   //       const bValue = b[sortColumn];
+//   //       if (aValue == null) return 1;
+//   //       if (bValue == null) return -1;
+//   //       if (typeof aValue === "string") {
+//   //         return sortDirection === "asc"
+//   //           ? aValue.localeCompare(bValue)
+//   //           : bValue.localeCompare(aValue);
+//   //       } else {
+//   //         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+//   //       }
+//   //     });
+//   //   }
+// //   return filteredWorkouts;
+// // };
+//   const getSortedAndFilteredWorkouts = () => {
+//     let filteredWorkouts = [...workouts];
+  
+//     // Apply search filter
+//     if (searchTerm) {
+//       filteredWorkouts = filteredWorkouts.filter((workout) =>
+//         workout.workoutName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         workout.exerciseType?.toLowerCase().includes(searchTerm.toLowerCase())
+//       );
+//     }
+  
+//     // Apply type filter
+//     if (filterType !== "all") {
+//       filteredWorkouts = filteredWorkouts.filter(
+//         (workout) => workout.exerciseType?.toLowerCase() === filterType.toLowerCase()
+//       );
+//     }
+  
+//     // Apply sorting
+//     if (sortColumn) {
+//       filteredWorkouts.sort((a, b) => {
+//         const aValue = a[sortColumn];
+//         const bValue = b[sortColumn];
+//         if (aValue == null) return 1;
+//         if (bValue == null) return -1;
+//         if (typeof aValue === "string") {
+//           return sortDirection === "asc"
+//             ? aValue.localeCompare(bValue)
+//             : bValue.localeCompare(aValue);
+//         } else {
+//           return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+//         }
+//       });
+//     }
+  
+//     return filteredWorkouts;
+//   };
+  
+
+  
+
+//   return (
+//     <div className="min-h-screen bg-white">
+//       <Head>
+//         <title>Workout Recommendations | Admin Dashboard</title>
+//       </Head>
+
+//       {/* Header */}
+//       <header className="bg-green-600 text-white shadow-md">
+//         <div className="container mx-auto py-6 px-4">
+//           <div className="flex justify-between items-center">
+//             <div className="flex items-center space-x-2">
+//               <Activity className="w-8 h-8" />
+//               <h1 className="text-2xl font-bold">Workout Recommendations</h1>
+//             </div>
+//             <button
+//               onClick={fetchWorkouts}
+//               className="flex items-center space-x-2 bg-white text-green-600 px-4 py-2 rounded-md hover:bg-gray-100"
+//             >
+//               <RefreshCw className="w-4 h-4" />
+//               <span>Refresh</span>
+//             </button>
+//           </div>
+//         </div>
+//       </header>
+
+//       {/* Main Content */}
+//       <main className="container mx-auto py-8 px-4">
+//         {/* Filters */}
+//         <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+//           <div className="flex items-center space-x-2 bg-gray-100 rounded-md px-3 py-2 w-full md:w-auto">
+//             <Search className="w-5 h-5 text-gray-500" />
+//             <input
+//               type="text"
+//               placeholder="Search workouts..."
+//               className="bg-transparent border-none focus:outline-none w-full"
+//               value={searchTerm}
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//             />
+//           </div>
+
+//           <div className="flex items-center space-x-4">
+//             <div className="flex items-center space-x-2">
+//               <Filter className="w-5 h-5 text-gray-500" />
+//               <select
+//                 className="bg-gray-100 border-none rounded-md px-3 py-2 focus:outline-none"
+//                 value={filterType}
+//                 onChange={(e) => setFilterType(e.target.value)}
+//               >
+//                 <option value="all">All Types</option>
+//                 <option value="cardio">Cardio</option>
+//                 <option value="strength">Strength</option>
+//                 <option value="flexibility">Flexibility</option>
+//                 <option value="hiit">HIIT</option>
+//                 <option value="yoga">Yoga</option>
+//               </select>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Error State */}
+//         {error && (
+//           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 flex items-center">
+//             <AlertCircle className="w-5 h-5 mr-2" />
+//             <p>{error}</p>
+//           </div>
+//         )}
+
+//         {/* Loading State */}
+//         {isLoading ? (
+//           <div className="flex justify-center items-center h-64">
+//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+//           </div>
+//         ) : workouts.length > 0 ? (
+//           // Table Content
+//           <div className="bg-white shadow-md rounded-lg overflow-hidden">
+//             <div className="overflow-x-auto">
+//               <table className="min-w-full divide-y divide-gray-200">
+//                 <thead className="bg-gray-50">
+//                   <tr>
+//                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+//                       Name
+//                     </th>
+//                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+//                       Type
+//                     </th>
+//                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+//                       Duration (Minutes)
+//                     </th>
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//   {getSortedAndFilteredWorkouts().map((workout, index) => (
+//     <tr key={workout.workoutId || `workout-${index}`}>
+//       <td className="px-6 py-4">{workout.workoutName || "No Name"}</td>
+//       <td className="px-6 py-4">{workout.exerciseType || "No Type"}</td>
+//       <td className="px-6 py-4">
+//         {workout.durationMinutes !== undefined ? workout.durationMinutes : "No Duration"}
+//       </td>
+//     </tr>
+//   ))}
+// </tbody>
+
+
+//               </table>
+//             </div>
+//           </div>
+//         ) : (
+//           <p className="text-center text-gray-500">
+//             No workout recommendations available.
+//           </p>
+//         )}
+//       </main>
+//     </div>
+//   );
+// }
 "use client";
 
-import { useState, useEffect } from 'react';
-import {
-  Activity,
-  Filter,
-  Search,
-  ChevronDown,
-  ChevronUp,
-  RefreshCw,
-  AlertCircle,
-} from 'lucide-react';
-import Head from 'next/head';
+import { useState, useEffect } from "react";
+import { Activity, Filter, Search, RefreshCw, AlertCircle } from "lucide-react";
+import Head from "next/head";
 
 export default function WorkoutsPage() {
   const [workouts, setWorkouts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
 
   useEffect(() => {
     fetchWorkouts();
   }, []);
 
-  // Function to fetch workouts from the API
   const fetchWorkouts = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:9090/api/workoutRecommendations', {
-        headers: {
-          'Content-Type': 'application/json',
-          Role: 'ADMIN', // Required role header
-        },
-      });
+      const response = await fetch(
+        "http://localhost:9090/api/workoutRecommendations",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Role: "ADMIN", // Send Role for admin access
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      setWorkouts(data.workoutRecommendations || []); // Expecting backend to return a Map
+      console.log("Fetched Workouts Data:", data); // Log the response data
+      setWorkouts(data.workoutRecommendations || []); // Ensure proper structure
       setError(null);
     } catch (err) {
-      console.error('Error fetching workout recommendations:', err.message);
+      console.error("Error fetching workout recommendations:", err.message);
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Sorting logic
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
-  // Get the sorting icon
-  const getSortIcon = (column) => {
-    if (sortColumn !== column) return null;
-    return sortDirection === 'asc' ? (
-      <ChevronUp className="inline ml-1 w-4 h-4" />
-    ) : (
-      <ChevronDown className="inline ml-1 w-4 h-4" />
-    );
-  };
-
-  // Filtering, searching, and sorting logic
-  const getSortedAndFilteredWorkouts = () => {
+  const getFilteredWorkouts = () => {
     let filteredWorkouts = [...workouts];
 
     // Apply search filter
     if (searchTerm) {
       filteredWorkouts = filteredWorkouts.filter((workout) =>
-        workout.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        workout.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        workout.type?.toLowerCase().includes(searchTerm.toLowerCase())
+        workout.workoutName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        workout.exerciseType?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply type filter
-    if (filterType !== 'all') {
+    if (filterType !== "all") {
       filteredWorkouts = filteredWorkouts.filter(
-        (workout) => workout.type?.toLowerCase() === filterType.toLowerCase()
+        (workout) => workout.exerciseType?.toLowerCase() === filterType.toLowerCase()
       );
-    }
-
-    // Apply sorting
-    if (sortColumn) {
-      filteredWorkouts.sort((a, b) => {
-        const aValue = a[sortColumn];
-        const bValue = b[sortColumn];
-        if (aValue == null) return 1;
-        if (bValue == null) return -1;
-        if (typeof aValue === 'string') {
-          return sortDirection === 'asc'
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        } else {
-          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-        }
-      });
     }
 
     return filteredWorkouts;
@@ -468,28 +696,48 @@ export default function WorkoutsPage() {
                       Type
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Duration (Minutes)
+                      Calories Burned
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Difficulty Level
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Frequency/Week
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Equipment Needed
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-  {getSortedAndFilteredWorkouts().map((workout, index) => (
-    <tr key={index}> {/* Fallback to array index as key */}
-      <td className="px-6 py-4">{workout.name || '-'}</td>
-      <td className="px-6 py-4">{workout.type || '-'}</td>
-      <td className="px-6 py-4">{workout.duration || '-'}</td>
-    </tr>
-  ))}
-</tbody>
-
+                  {getFilteredWorkouts().map((workout, index) => (
+                    <tr key={workout.workoutId || `workout-${index}`}>
+                      <td className="px-6 py-4">{workout.workoutName || "No Name"}</td>
+                      <td className="px-6 py-4">{workout.exerciseType || "No Type"}</td>
+                      <td className="px-6 py-4">
+                        {workout.caloriesBurned !== undefined
+                          ? workout.caloriesBurned
+                          : "No Data"}
+                      </td>
+                      <td className="px-6 py-4">{workout.difficultyLevel || "No Level"}</td>
+                      <td className="px-6 py-4">
+                        {workout.frequencyPerWeek !== undefined
+                          ? workout.frequencyPerWeek
+                          : "No Data"}
+                      </td>
+                      <td className="px-6 py-4">{workout.equipmentNeeded || "None"}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>
         ) : (
-          <p className="text-center text-gray-500">No workout recommendations available.</p>
+          <p className="text-center text-gray-500">
+            No workout recommendations available.
+          </p>
         )}
       </main>
     </div>
   );
 }
-
