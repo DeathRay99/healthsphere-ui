@@ -548,6 +548,7 @@
 import { useState, useEffect } from "react";
 import { Activity, Filter, Search, RefreshCw, AlertCircle } from "lucide-react";
 import Head from "next/head";
+import useAdminRedirect from "@/hooks/useAdminRedirect";
 
 export default function WorkoutsPage() {
   const [workouts, setWorkouts] = useState([]);
@@ -555,6 +556,8 @@ export default function WorkoutsPage() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
+
+  useAdminRedirect();
 
   useEffect(() => {
     fetchWorkouts();

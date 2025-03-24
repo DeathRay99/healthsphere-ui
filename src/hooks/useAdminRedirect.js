@@ -21,6 +21,7 @@ const useAdminRedirect = () => {
 
       // Redirect if not logged in or if userId mismatch
       if (!isLoggedIn) {
+        alert("please login to view this resource....");
         router.push("/login");
         return;
       }

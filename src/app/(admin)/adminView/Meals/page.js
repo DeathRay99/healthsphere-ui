@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Activity, Filter, Search, RefreshCw, AlertCircle } from "lucide-react";
 import Head from "next/head";
+import useAdminRedirect from "@/hooks/useAdminRedirect";
 
 export default function AdminMealsPage() {
   const [meals, setMeals] = useState([]);
@@ -11,7 +12,8 @@ export default function AdminMealsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
 
-  // Fetch meals on initial render
+  useAdminRedirect();
+
   useEffect(() => {
     fetchMeals();
   }, []);

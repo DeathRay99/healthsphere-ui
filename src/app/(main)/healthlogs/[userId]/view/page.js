@@ -3,13 +3,15 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Loader from "@/components/Loader";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function ViewHealthLogs() {
   const { userId } = useParams(); // Retrieve userId from the URL
   const [healthLogs, setHealthLogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch health logs for the user
+
+  useAuthRedirect(userId);
   const fetchHealthLogs = async () => {
     try {
       setLoading(true);

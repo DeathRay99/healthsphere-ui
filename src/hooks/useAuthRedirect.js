@@ -18,12 +18,16 @@ const useAuthRedirect = (id) => {
 
   useEffect(() => {
     if (isAuthChecked) {
-      const userId = localStorage.getItem("userId");
 
       if (!isLoggedIn) {
+        alert("please login to view this resource....");
         router.push("/login");
         return;
       }
+
+      if (!id) return;
+
+      const userId = localStorage.getItem("userId");
 
       if (role==="ADMIN") {
         alert("Access denied, redirecting to admin panel !!!!");
@@ -31,7 +35,7 @@ const useAuthRedirect = (id) => {
         return;
       }
       if (userId != id) {
-        alert("not authorized");
+        alert("not authorized to view this resource, redirecting to home page....");
         router.push("/");
         return;
       }

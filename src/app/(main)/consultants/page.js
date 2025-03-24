@@ -3,14 +3,16 @@
 import { useState, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
 import Loader from "@/components/Loader";
-import ConsultantTableUser from "@/components/ConsultantTableUser"; // User-specific table
+import ConsultantTableUser from "@/components/ConsultantTableUser"; 
+import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function UserConsultants() {
   const [consultants, setConsultants] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Fetch consultants on component mount
+  useAuthRedirect();
+
   useEffect(() => {
     fetchConsultants();
   }, []);

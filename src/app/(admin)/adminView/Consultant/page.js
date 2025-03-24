@@ -683,12 +683,15 @@ import ConsultantTable from "@/components/ConsultantTable";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import useAdminRedirect from "@/hooks/useAdminRedirect";
 
 export default function Consultants() {
   const [consultants, setConsultants] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const router = useRouter(); // Use router for navigation
+
+  useAdminRedirect();
 
   useEffect(() => {
     fetchConsultants();
