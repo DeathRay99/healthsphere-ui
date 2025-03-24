@@ -11,6 +11,7 @@ export default function AdminView() {
   const [workoutData, setWorkoutData] = useState(null);
   const [dietData, setDietData] = useState(null);
   const [consultantData, setConsultantData] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   useAdminRedirect();
 
@@ -79,30 +80,46 @@ export default function AdminView() {
       setLoading(false);
     }
   };
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:9090/api/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+           Role: localStorage.getItem("role"),
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setUserData(data.users);
+      } else alert(data.err);
+    } catch (err) {
+      console.log("some error !!", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchWorkoutRecommendations();
     fetchDietRecommendations();
     fetchConsultants();
+    fetchUsers();
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <TopNav />
-        <main className="flex-1 overflow-y-auto p-6">
-          {loading || !dietData || !workoutData || !consultantData? (
+        <main className="flex-1 p-6">
+          {loading || !dietData || !workoutData || !consultantData ||!userData? (
             <Loader />
           ) : (
             <DashboardOverview
               dietData={dietData}
               workoutData={workoutData}
               consultantData={consultantData}
+              userData={userData}
             />
           )}
         </main>
-      </div>
-    </div>
   );
 }
