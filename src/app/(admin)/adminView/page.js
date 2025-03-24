@@ -1,14 +1,16 @@
 // pages/admin/index.js
 "use client";
 import React from 'react';
-import Link from 'next/link';
-import { Users, Coffee, Activity, UserCheck, Home, Bell, Settings, Search, LogOut } from 'lucide-react';
 
-import Sidebar from '../../../components/AdminSidebar';
-import TopNav from '../../../components/AdminTopNav';
-import DashboardOverview from "../../../components/DashboardOverview";
+import Sidebar from '@/components/AdminSidebar';
+import TopNav from '@/components/AdminTopNav';
+import DashboardOverview from '@/components/DashboardOverview';
+import useAdminRedirect from '@/hooks/useAdminRedirect';
     
     export default function AdminView() {
+
+      useAdminRedirect();
+      
       return (
         <div className="flex h-screen bg-gray-50">
           <Sidebar />
