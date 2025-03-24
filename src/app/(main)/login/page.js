@@ -31,12 +31,14 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // localStorage.setItem("username", data.username);
-        // localStorage.setItem("userId", data.userId);
-        // localStorage.setItem("role", data.role);
+        
         login(data);
+        console.log();
         setFormData({ username: "", passwordHash: "" });
         alert("Login successful!");
+        if(localStorage.getItem("role")==="ADMIN")
+          router.push("/adminView");
+        else
         router.push("/");
       } else {
         setError(data.error);

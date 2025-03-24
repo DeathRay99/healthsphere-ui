@@ -1,14 +1,15 @@
 import React from "react";
 import { Users, Activity, Coffee, UserCheck } from "lucide-react";
 
-const summaryData = [
-  { icon: Users, title: "Total Users", value: "1,250" },
-  { icon: Coffee, title: "Total Meals", value: "850" },
-  { icon: Activity, title: "Total Workouts", value: "650" },
-  { icon: UserCheck, title: "Active Consultants", value: "120" },
-];
 
-export default function SummaryCards() {
+export default function SummaryCards({dietCount,workoutCount}) {
+
+  const summaryData = [
+    { icon: Users, title: "Total Users", value: "1,250" },
+    { icon: Coffee, title: "Total Meals Generated", value: dietCount },
+    { icon: Activity, title: "Total Workouts Generated", value: workoutCount },
+    { icon: UserCheck, title: "Active Consultants", value: "120" },
+  ];
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {summaryData.map(({ icon: Icon, title, value }, index) => (

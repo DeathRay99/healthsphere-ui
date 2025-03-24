@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/store/authStore";
 
-const useAuthRedirect = (id) => {
+const useAdminRedirect = () => {
   const router = useRouter();
   const { isLoggedIn, initializeAuth } = useAuthStore();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -18,26 +18,21 @@ const useAuthRedirect = (id) => {
 
   useEffect(() => {
     if (isAuthChecked) {
-      const userId = localStorage.getItem("userId");
 
+      // Redirect if not logged in or if userId mismatch
       if (!isLoggedIn) {
         router.push("/login");
         return;
       }
 
-      if (role==="ADMIN") {
-        alert("Access denied, redirecting to admin panel !!!!");
-        router.push("/adminView");
-        return;
-      }
-      if (userId != id) {
-        alert("not authorized");
+      if (role!=="ADMIN") {
+        alert("Access denied, you are not an admin !!!!");
         router.push("/");
         return;
       }
       
     }
-  }, [id, isLoggedIn, isAuthChecked, router, role]);
+  }, [role, isLoggedIn, isAuthChecked, router]);
 };
 
-export default useAuthRedirect;
+export default useAdminRedirect;

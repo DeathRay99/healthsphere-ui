@@ -18,7 +18,6 @@ const userWorkouts = () => {
     // Fetch workouts for the specific user
     const fetchWorkouts = async () => {
       try {
-       
         const response = await fetch(`http://localhost:9090/api/workoutRecommendations/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch workouts');
@@ -56,22 +55,24 @@ const userWorkouts = () => {
     });
   };
 
-  // Function to check if date is in current week
-  const isThisWeek = (dateString) => {
+  // Function to check if date is within the last 7 days
+  const isWithinLastSevenDays = (dateString) => {
     const date = new Date(dateString);
     const today = new Date();
     
-    // Get the first day of the week (Sunday)
-    const firstDayOfWeek = new Date(today);
-    const day = today.getDay();
-    firstDayOfWeek.setDate(today.getDate() - day);
+    // Set hours, minutes, seconds and milliseconds to 0 for accurate day comparison
+    today.setHours(0, 0, 0, 0);
     
-    // Get the last day of the week (Saturday)
-    const lastDayOfWeek = new Date(firstDayOfWeek);
-    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+    // Calculate date from 7 days ago
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
     
-    // Check if the date is between first and last day of the week
-    return date >= firstDayOfWeek && date <= lastDayOfWeek;
+    // Set the workout date's time to midnight for accurate comparison
+    const workoutDate = new Date(date);
+    workoutDate.setHours(0, 0, 0, 0);
+    
+    // Check if the date is from the last 7 days (inclusive of today)
+    return workoutDate >= sevenDaysAgo && workoutDate <= today;
   };
 
   // Function to group workouts by date
@@ -85,12 +86,12 @@ const userWorkouts = () => {
       
       if (!grouped[dateKey]) {
         const formattedDate = formatDate(date);
-        const currentWeek = isThisWeek(date);
+        const isCurrentWeek = isWithinLastSevenDays(date);
         
         grouped[dateKey] = {
-          displayDate: currentWeek ? `${formattedDate} (Current Week)` : formattedDate,
+          displayDate: isCurrentWeek ? `${formattedDate} (Current Week)` : formattedDate,
           workouts: [],
-          isCurrentWeek: currentWeek
+          isCurrentWeek: isCurrentWeek
         };
       }
       
@@ -117,7 +118,7 @@ const userWorkouts = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-8">Your Generated Workouts' history</h1>
+      <h1 className="text-3xl font-bold mb-8">Your Generated Workouts' History</h1>
       
       {Object.keys(groupedWorkouts).sort().reverse().map(dateKey => {
         const dateGroup = groupedWorkouts[dateKey];
