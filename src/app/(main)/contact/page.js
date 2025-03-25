@@ -12,7 +12,7 @@ export default function Contact() {
       phone: "+91-8979218038",
     },
     {
-      name: "Deepak Kumar Goel",
+      name: "Deepak Kumar Goyal",
       email: "deepak84687@gmail.com",
       phone: "+91-9599799310",
     },

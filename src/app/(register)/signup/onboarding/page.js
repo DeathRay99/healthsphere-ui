@@ -1,9 +1,9 @@
-// pages/onboarding.js
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/store/authStore";
 import Image from "next/image";
+import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function OnboardingForm() {
   const { isLoggedIn, initializeAuth } = useAuthStore();
@@ -29,20 +29,27 @@ export default function OnboardingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    // Check if user is authenticated
-    initializeAuth();
-    if (!isLoggedIn) {
-      router.push("/login");
-    }
-  }, []);
+  const today = new Date().toISOString().split("T")[0];
+
+  useAuthRedirect();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+
+    // Special validation for numeric fields
+    if (name === "height" || name === "weight") {
+      // Ensure non-negative numbers
+      const numValue = parseFloat(value);
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: numValue > 0 ? value : "",
+      }));
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const requiredFields = {
@@ -54,7 +61,27 @@ export default function OnboardingForm() {
   const validateStep = () => {
     const fieldsToCheck = requiredFields[currentStep];
     for (let field of fieldsToCheck) {
-      if (!formData[field].trim()) {
+      // Special validation for height and weight
+      if (
+        (field === "height" || field === "weight") &&
+        parseFloat(formData[field]) <= 0
+      ) {
+        setErrorMessage(
+          `${
+            field.charAt(0).toUpperCase() + field.slice(1)
+          } must be a positive number.`
+        );
+        return false;
+      }
+
+      // Date of birth validation
+      if (field === "dateOfBirth" && formData[field] > today) {
+        setErrorMessage("Date of Birth cannot be in the future.");
+        return false;
+      }
+
+      // General required field validation
+      if (!formData[field].toString().trim()) {
         setErrorMessage("Please fill all required fields before proceeding.");
         return false;
       }
@@ -88,7 +115,7 @@ export default function OnboardingForm() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Role": localStorage.getItem("role"),
+            Role: localStorage.getItem("role"),
           },
           body: JSON.stringify({
             ...formData,
@@ -205,6 +232,7 @@ export default function OnboardingForm() {
                       name="dateOfBirth"
                       value={formData.dateOfBirth}
                       onChange={handleChange}
+                      max={today}
                       className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -236,6 +264,7 @@ export default function OnboardingForm() {
                         name="height"
                         value={formData.height}
                         onChange={handleChange}
+                        min="1"
                         step="0.01"
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
@@ -250,6 +279,7 @@ export default function OnboardingForm() {
                         name="weight"
                         value={formData.weight}
                         onChange={handleChange}
+                        min="1"
                         step="0.01"
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
