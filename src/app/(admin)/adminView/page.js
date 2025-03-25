@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Sidebar from "@/components/AdminSidebar";
-import TopNav from "@/components/AdminTopNav";
 import DashboardOverview from "@/components/DashboardOverview";
 import useAdminRedirect from "@/hooks/useAdminRedirect";
 import Loader from "@/components/Loader";

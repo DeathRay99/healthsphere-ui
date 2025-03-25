@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Consultants from "@/app/(main)/consultants/page";
+import UserConsultants from "@/app/(main)/consultants/page";
 import { useRouter } from "next/navigation";
 import "@testing-library/jest-dom";
 
@@ -18,13 +18,13 @@ describe("Consultants Page", () => {
   });
 
   it("renders the page with correct headings and description", () => {
-    render(<Consultants />);
+    render(<UserConsultants />);
     expect(
-      screen.getByText(/Meet Our Expert Consultants/i)
+      screen.getByText(/Explore Our Expert Consultants/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /We keep partnering with the world's best health consultants/i
+        /Browse our list of expert consultants to find the perfect advice for your health journey/i
       )
     ).toBeInTheDocument();
   });
@@ -47,7 +47,7 @@ describe("Consultants Page", () => {
       json: async () => mockConsultants,
     });
 
-    render(<Consultants />);
+    render(<UserConsultants />);
     await waitFor(() => {
       expect(screen.getByText("John Doe")).toBeInTheDocument();
       expect(screen.getByText("Nutritionist")).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe("Consultants Page", () => {
         setTimeout(() => resolve({ ok: true, json: async () => [] }), 3000)
       )
     );
-    render(<Consultants />);
+    render(<UserConsultants />);
     await waitFor(() => {
       expect(document.querySelector(".animate-spin")).toBeInTheDocument();
     });
@@ -73,7 +73,7 @@ describe("Consultants Page", () => {
 
     fetch.mockRejectedValueOnce(new Error("Failed to fetch consultants"));
 
-    render(<Consultants />);
+    render(<UserConsultants />);
 
     await waitFor(() => {
       expect(consoleErrorMock).toHaveBeenCalledWith(
@@ -110,7 +110,7 @@ describe("Consultants Page", () => {
       json: async () => mockConsultants,
     });
 
-    render(<Consultants />);
+    render(<UserConsultants />);
     await waitFor(() => {
       expect(screen.getByText("John Doe")).toBeInTheDocument();
       expect(screen.getByText("Jane Smith")).toBeInTheDocument();
@@ -142,7 +142,7 @@ describe("Consultants Page", () => {
       ],
     });
 
-    render(<Consultants />);
+    render(<UserConsultants />);
     await waitFor(() => {
       expect(screen.getByText("John Doe")).toBeInTheDocument();
     });

@@ -61,10 +61,12 @@ export default function UserConsultants() {
       </p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       {loading ? (
-        <Loader />
-      ) : (
-        <ConsultantTableUser consultants={filteredConsultants} />
-      )}
+      <Loader />
+    ) : filteredConsultants.length === 0 ? (
+      <p className="text-center text-gray-500">No consultants match your search criteria</p>
+    ) : (
+      <ConsultantTableUser consultants={filteredConsultants} />
+    )}
     </div>
   );
 }
