@@ -621,13 +621,373 @@
 //     </form>
 //   );
 // }
+// "use client";
+
+// import React, { useState, useEffect } from "react";
+// import MealSelector from "@/components/HealthLogs/MealSelector";
+// import ExerciseSelector from "@/components/HealthLogs/ExerciseSelector";
+// import MeasurementInputs from "@/components/HealthLogs/MeasurementInputs";
+
+// export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted }) {
+//   const [healthLog, setHealthLog] = useState({
+//     breakfast: null,
+//     lunch: null,
+//     dinner: null,
+//     exerciseId: null,
+//     weight: "",
+//     sleep: "",
+//     waterIntake: "",
+//     bpSystolic: "",
+//     bpDiastolic: "",
+//     heartRate: "",
+//     calories: 0,
+//     protein: 0,
+//     carbs: 0,
+//     fats: 0,
+//   });
+
+//   const [recommendations, setRecommendations] = useState({
+//     meals: [],
+//     exercises: [],
+//   });
+
+//   const [errors, setErrors] = useState({});
+
+//   const fetchRecommendations = async () => {
+//     try {
+//       const mealResponse = await fetch(`http://localhost:9090/api/dietRecommendations/${userId}`);
+//       const exerciseResponse = await fetch(`http://localhost:9090/api/workoutRecommendations/${userId}`);
+
+//       const meals = mealResponse.ok ? await mealResponse.json() : [];
+//       const exercises = exerciseResponse.ok ? await exerciseResponse.json() : [];
+
+//       setRecommendations({
+//         meals: Array.isArray(meals) ? meals : [],
+//         exercises: Array.isArray(exercises) ? exercises : [],
+//       });
+//     } catch (error) {
+//       console.error("Error fetching recommendations:", error.message);
+//       alert("An error occurred while fetching recommendations. Please try again later.");
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchRecommendations();
+//   }, []);
+
+//   const validateForm = () => {
+//     const { breakfast, lunch, dinner, exerciseId, weight, sleep, waterIntake, bpSystolic, bpDiastolic, heartRate } = healthLog;
+//     const newErrors = {};
+
+//     if (!breakfast && !lunch && !dinner) {
+//       newErrors.meals = "Please select at least one meal (breakfast, lunch, or dinner).";
+//     }
+//     if (!exerciseId) {
+//       newErrors.exerciseId = "Please select an exercise.";
+//     }
+
+//     const requiredMeasurements = ["weight", "sleep", "waterIntake", "bpSystolic", "bpDiastolic", "heartRate"];
+//     requiredMeasurements.forEach((field) => {
+//       if (!healthLog[field] || healthLog[field].trim() === "") {
+//         newErrors[field] = `${field} is required.`;
+//       }
+//     });
+
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0; // Return true if no errors
+//   };
+
+//   const handleMealSelect = (mealType, meal) => {
+//     setHealthLog((prevHealthLog) => ({
+//       ...prevHealthLog,
+//       [mealType]: meal ? meal.dietId : null,
+//       calories: meal ? prevHealthLog.calories + meal.caloriesPerDay : prevHealthLog.calories,
+//       protein: meal ? prevHealthLog.protein + meal.proteinPercentage : prevHealthLog.protein,
+//       carbs: meal ? prevHealthLog.carbs + meal.carbsPercentage : prevHealthLog.carbs,
+//       fats: meal ? prevHealthLog.fats + meal.fatPercentage : prevHealthLog.fats,
+//     }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!validateForm()) return;
+
+//     try {
+//       const response = await fetch("http://localhost:9090/healthLogs", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           ...healthLog,
+//           userId,
+//         }),
+//       });
+
+//       const contentType = response.headers.get("Content-Type");
+//       if (!response.ok) {
+//         let errorMessage = "An unexpected error occurred.";
+//         if (contentType && contentType.includes("application/json")) {
+//           const errorData = await response.json();
+//           errorMessage = errorData.err || errorMessage;
+//         } else {
+//           errorMessage = await response.text();
+//         }
+//         throw new Error(errorMessage);
+//       }
+
+//       const data = await response.json();
+//       alert(data.response || "Health log submitted successfully!");
+//       setHealthLog({
+//         breakfast: null,
+//         lunch: null,
+//         dinner: null,
+//         exerciseId: null,
+//         weight: "",
+//         sleep: "",
+//         waterIntake: "",
+//         bpSystolic: "",
+//         bpDiastolic: "",
+//         heartRate: "",
+//         calories: 0,
+//         protein: 0,
+//         carbs: 0,
+//         fats: 0,
+//       });
+//       onLogSubmitted();
+//     } catch (error) {
+//       console.error("Error submitting health log:", error.message);
+//       alert(error.message);
+//     }
+//   };
+
+//   return (
+//     <form className="space-y-6">
+//       <MealSelector meals={recommendations.meals} onMealSelect={handleMealSelect} error={errors.meals} />
+//       <ExerciseSelector
+//         exercises={recommendations.exercises}
+//         onExerciseSelect={(exercise) =>
+//           setHealthLog((prevHealthLog) => ({
+//             ...prevHealthLog,
+//             exerciseId: exercise?.workoutId || null,
+//           }))
+//         }
+//         error={errors.exerciseId}
+//       />
+//       <MeasurementInputs
+//         healthLog={healthLog}
+//         onChange={(field, value) =>
+//           setHealthLog((prevHealthLog) => ({ ...prevHealthLog, [field]: value }))
+//         }
+//         errors={errors}
+//       />
+//       <div className="flex justify-center gap-4 mt-4">
+//         <button
+//           type="submit"
+//           className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
+//           onClick={handleSubmit}
+//         >
+//           Submit Health Log
+//         </button>
+//         <button
+//           type="button"
+//           className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
+//           onClick={onDisplayLogs}
+//         >
+//           Display All Health Logs
+//         </button>
+//       </div>
+//     </form>
+//   );
+// }
+// "use client";
+
+// import React, { useState, useEffect } from "react";
+// import MealSelector from "@/components/HealthLogs/MealSelector";
+// import ExerciseSelector from "@/components/HealthLogs/ExerciseSelector";
+// import MeasurementInputs from "@/components/HealthLogs/MeasurementInputs";
+
+// export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted }) {
+//   const [healthLog, setHealthLog] = useState({
+//     breakfast: null,
+//     lunch: null,
+//     dinner: null,
+//     exerciseId: null,
+//     weight: "",
+//     sleep: "",
+//     waterIntake: "",
+//     bpSystolic: "",
+//     bpDiastolic: "",
+//     heartRate: "",
+//     calories: 0,
+//     protein: 0,
+//     carbs: 0,
+//     fats: 0,
+//   });
+
+//   const [recommendations, setRecommendations] = useState({
+//     meals: [],
+//     exercises: [],
+//   });
+
+//   const [errors, setErrors] = useState({});
+
+//   const fetchRecommendations = async () => {
+//     try {
+//       const mealResponse = await fetch(`http://localhost:9090/api/dietRecommendations/${userId}`);
+//       const exerciseResponse = await fetch(`http://localhost:9090/api/workoutRecommendations/${userId}`);
+
+//       const meals = mealResponse.ok ? await mealResponse.json() : [];
+//       const exercises = exerciseResponse.ok ? await exerciseResponse.json() : [];
+
+//       setRecommendations({
+//         meals: Array.isArray(meals) ? meals : [],
+//         exercises: Array.isArray(exercises) ? exercises : [],
+//       });
+//     } catch (error) {
+//       console.error("Error fetching recommendations:", error.message);
+//       alert("An error occurred while fetching recommendations. Please try again later.");
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchRecommendations();
+//   }, []);
+
+//   const validateForm = () => {
+//     const { breakfast, lunch, dinner, exerciseId, weight, sleep, waterIntake, bpSystolic, bpDiastolic, heartRate } = healthLog;
+//     const newErrors = {};
+
+//     if (!breakfast && !lunch && !dinner) {
+//       newErrors.meals = "Please select at least one meal (breakfast, lunch, or dinner).";
+//     }
+//     if (!exerciseId) {
+//       newErrors.exerciseId = "Please select an exercise.";
+//     }
+
+//     const requiredMeasurements = ["weight", "sleep", "waterIntake", "bpSystolic", "bpDiastolic", "heartRate"];
+//     requiredMeasurements.forEach((field) => {
+//       if (!healthLog[field] || healthLog[field].trim() === "") {
+//         newErrors[field] = `${field} is required.`;
+//       }
+//     });
+
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0; // Return true if no errors
+//   };
+
+//   const handleMealSelect = (mealType, meal) => {
+//     setHealthLog((prevHealthLog) => ({
+//       ...prevHealthLog,
+//       [mealType]: meal ? meal.dietId : null,
+//       calories: meal ? prevHealthLog.calories + meal.caloriesPerDay : prevHealthLog.calories,
+//       protein: meal ? prevHealthLog.protein + meal.proteinPercentage : prevHealthLog.protein,
+//       carbs: meal ? prevHealthLog.carbs + meal.carbsPercentage : prevHealthLog.carbs,
+//       fats: meal ? prevHealthLog.fats + meal.fatPercentage : prevHealthLog.fats,
+//     }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!validateForm()) return;
+
+//     try {
+//       const response = await fetch("http://localhost:9090/healthLogs", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           ...healthLog,
+//           userId,
+//         }),
+//       });
+
+//       const contentType = response.headers.get("Content-Type");
+//       if (!response.ok) {
+//         let errorMessage = "An unexpected error occurred.";
+//         if (contentType && contentType.includes("application/json")) {
+//           const errorData = await response.json();
+//           errorMessage = errorData.err || errorMessage;
+//         } else {
+//           errorMessage = await response.text();
+//         }
+//         throw new Error(errorMessage);
+//       }
+
+//       const data = await response.json();
+//       alert(data.response || "Health log submitted successfully!");
+//       setHealthLog({
+//         breakfast: null,
+//         lunch: null,
+//         dinner: null,
+//         exerciseId: null,
+//         weight: "",
+//         sleep: "",
+//         waterIntake: "",
+//         bpSystolic: "",
+//         bpDiastolic: "",
+//         heartRate: "",
+//         calories: 0,
+//         protein: 0,
+//         carbs: 0,
+//         fats: 0,
+//       });
+//       onLogSubmitted();
+//     } catch (error) {
+//       console.error("Error submitting health log:", error.message);
+//       alert(error.message);
+//     }
+//   };
+
+//   return (
+//     <form className="space-y-6">
+//       <MealSelector meals={recommendations.meals} onMealSelect={handleMealSelect} error={errors.meals} />
+//       <ExerciseSelector
+//         exercises={recommendations.exercises}
+//         onExerciseSelect={(exercise) =>
+//           setHealthLog((prevHealthLog) => ({
+//             ...prevHealthLog,
+//             exerciseId: exercise?.workoutId || null,
+//           }))
+//         }
+//         error={errors.exerciseId}
+//       />
+//       <MeasurementInputs
+//         healthLog={healthLog}
+//         onChange={(field, value) =>
+//           setHealthLog((prevHealthLog) => ({ ...prevHealthLog, [field]: value }))
+//         }
+//         errors={errors}
+//       />
+//       <div className="flex justify-center gap-4 mt-4">
+//         <button
+//           type="submit"
+//           className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
+//           onClick={handleSubmit}
+//         >
+//           Submit Health Log
+//         </button>
+//         <button
+//           type="button"
+//           className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
+//           onClick={onDisplayLogs}
+//         >
+//           Display All Health Logs
+//         </button>
+//       </div>
+//     </form>
+//   );
+// }
+
+
 "use client";
 
 import React, { useState, useEffect } from "react";
 import MealSelector from "@/components/HealthLogs/MealSelector";
 import ExerciseSelector from "@/components/HealthLogs/ExerciseSelector";
 import MeasurementInputs from "@/components/HealthLogs/MeasurementInputs";
-import OptionalInputs from "@/components/HealthLogs/OptionalInputs";
+import OptionalInputs from "@/components/HealthLogs/OptionalInputs"; // Imported OptionalInputs component
 
 export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted }) {
   const [healthLog, setHealthLog] = useState({
@@ -641,6 +1001,7 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
     bpSystolic: "",
     bpDiastolic: "",
     heartRate: "",
+    bodyFat: "",
     calories: 0,
     protein: 0,
     carbs: 0,
@@ -652,7 +1013,8 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
     exercises: [],
   });
 
-  // Fetch meal and exercise recommendations
+  const [errors, setErrors] = useState({});
+
   const fetchRecommendations = async () => {
     try {
       const mealResponse = await fetch(`http://localhost:9090/api/dietRecommendations/${userId}`);
@@ -675,69 +1037,47 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
     fetchRecommendations();
   }, []);
 
-  // Handle meal selection
-  const handleMealSelect = (mealType, meal) => {
-    if (meal) {
-      setHealthLog((prevHealthLog) => ({
-        ...prevHealthLog,
-        [mealType]: meal.dietId,
-        calories: prevHealthLog.calories + meal.caloriesPerDay,
-        protein: prevHealthLog.protein + meal.proteinPercentage,
-        carbs: prevHealthLog.carbs + meal.carbsPercentage,
-        fats: prevHealthLog.fats + meal.fatPercentage,
-      }));
-    } else {
-      setHealthLog((prevHealthLog) => ({
-        ...prevHealthLog,
-        [mealType]: null,
-      }));
+  const validateForm = () => {
+    const { breakfast, lunch, dinner, exerciseId, weight, sleep, waterIntake } = healthLog;
+    const newErrors = {};
+
+    // Ensure at least one meal is selected
+    if (!breakfast && !lunch && !dinner) {
+      newErrors.meals = "Please select at least one meal (breakfast, lunch, or dinner).";
     }
+
+    // Ensure an exercise is selected
+    if (!exerciseId) {
+      newErrors.exerciseId = "Please select an exercise.";
+    }
+
+    // Ensure all required measurements are filled out
+    const requiredFields = ["weight", "sleep", "waterIntake"];
+    requiredFields.forEach((field) => {
+      if (!healthLog[field] || healthLog[field].trim() === "") {
+        newErrors[field] = `${field} is required.`;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
-  // Handle form submission
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await fetch("http://localhost:9090/healthLogs", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         ...healthLog,
-  //         userId, // Include userId in the payload
-  //       }),
-  //     });
+  const handleMealSelect = (mealType, meal) => {
+    setHealthLog((prevHealthLog) => ({
+      ...prevHealthLog,
+      [mealType]: meal ? meal.dietId : null,
+      calories: meal ? prevHealthLog.calories + meal.caloriesPerDay : prevHealthLog.calories,
+      protein: meal ? prevHealthLog.protein + meal.proteinPercentage : prevHealthLog.protein,
+      carbs: meal ? prevHealthLog.carbs + meal.carbsPercentage : prevHealthLog.carbs,
+      fats: meal ? prevHealthLog.fats + meal.fatPercentage : prevHealthLog.fats,
+    }));
+  };
 
-  //     const data = await response.json();
-  //     if (response.ok) {
-  //       alert(data.response);
-  //       setHealthLog({
-  //         breakfast: null,
-  //         lunch: null,
-  //         dinner: null,
-  //         exerciseId: null,
-  //         weight: "",
-  //         sleep: "",
-  //         waterIntake: "",
-  //         bpSystolic: "",
-  //         bpDiastolic: "",
-  //         heartRate: "",
-  //         calories: 0,
-  //         protein: 0,
-  //         carbs: 0,
-  //         fats: 0,
-  //       });
-  //       onLogSubmitted(); // Refresh logs after submission
-  //     } else {
-  //       alert(data.err);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting health log:", error.message);
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       const response = await fetch("http://localhost:9090/healthLogs", {
         method: "POST",
@@ -746,11 +1086,10 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
         },
         body: JSON.stringify({
           ...healthLog,
-          userId, // Include userId in the payload
+          userId,
         }),
       });
-  
-      // Check Content-Type to ensure it's JSON
+
       const contentType = response.headers.get("Content-Type");
       if (!response.ok) {
         let errorMessage = "An unexpected error occurred.";
@@ -758,13 +1097,13 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
           const errorData = await response.json();
           errorMessage = errorData.err || errorMessage;
         } else {
-          errorMessage = await response.text(); // Fallback for plain text errors
+          errorMessage = await response.text();
         }
         throw new Error(errorMessage);
       }
-  
-      const data = await response.json(); // Parse the JSON response
-      alert(data.response); // Display success message
+
+      const data = await response.json();
+      alert(data.response || "Health log submitted successfully!");
       setHealthLog({
         breakfast: null,
         lunch: null,
@@ -776,61 +1115,70 @@ export default function HealthLogForm({ userId, onDisplayLogs, onLogSubmitted })
         bpSystolic: "",
         bpDiastolic: "",
         heartRate: "",
+        bodyFat: "",
         calories: 0,
         protein: 0,
         carbs: 0,
         fats: 0,
       });
-      onLogSubmitted(); // Refresh logs after submission
+      onLogSubmitted();
     } catch (error) {
       console.error("Error submitting health log:", error.message);
-      alert(error.message); // Display error message
+      alert(error.message);
     }
   };
-  
 
   return (
     <form className="space-y-6">
-      <MealSelector meals={recommendations.meals} onMealSelect={handleMealSelect} />
+      {/* Meal Selector */}
+      <MealSelector meals={recommendations.meals} onMealSelect={handleMealSelect} error={errors.meals} />
+
+      {/* Exercise Selector */}
       <ExerciseSelector
         exercises={recommendations.exercises}
         onExerciseSelect={(exercise) =>
           setHealthLog((prevHealthLog) => ({
             ...prevHealthLog,
-            exerciseId: exercise.workoutId,
+            exerciseId: exercise?.workoutId || null,
           }))
         }
+        error={errors.exerciseId}
       />
+
+      {/* Measurement Inputs */}
       <MeasurementInputs
         healthLog={healthLog}
         onChange={(field, value) =>
           setHealthLog((prevHealthLog) => ({ ...prevHealthLog, [field]: value }))
         }
+        errors={errors}
       />
+
+      {/* Optional Inputs */}
       <OptionalInputs
         healthLog={healthLog}
         onChange={(field, value) =>
           setHealthLog((prevHealthLog) => ({ ...prevHealthLog, [field]: value }))
         }
       />
-      <div className="flex justify-center gap-4 mt-4">
-  <button
-    type="submit"
-    className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
-    onClick={handleSubmit}
-  >
-    Submit Health Log
-  </button>
-  <button
-    type="button"
-    className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
-    onClick={onDisplayLogs}
-  >
-    Display All Health Logs
-  </button>
-</div>
 
+      {/* Buttons */}
+      <div className="flex justify-center gap-4 mt-4">
+        <button
+          type="submit"
+          className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
+          onClick={handleSubmit}
+        >
+          Submit Health Log
+        </button>
+        <button
+          type="button"
+          className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition"
+          onClick={onDisplayLogs}
+        >
+          Display All Health Logs
+        </button>
+      </div>
     </form>
   );
 }
-
