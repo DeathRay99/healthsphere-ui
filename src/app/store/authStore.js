@@ -3,7 +3,6 @@ import { create } from 'zustand';
 const useAuthStore = create((set) => ({
   isLoggedIn: false,
 
-  // Check localStorage on load
   initializeAuth: () => {
     const username = localStorage.getItem("username");
     const userId = localStorage.getItem("userId");

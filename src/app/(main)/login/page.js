@@ -41,7 +41,7 @@ const Login = () => {
         else
         router.push("/");
       } else {
-        setError(data.error);
+        setError(data.err);
       }
     } catch (err) {
       console.log(err.message);
