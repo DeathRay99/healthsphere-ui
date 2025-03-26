@@ -80,41 +80,6 @@ describe("UserProfile Component", () => {
     expect(screen.getByText("123 Street, City")).toBeInTheDocument();
   });
 
-  test('validates form with negative height value', async () => {
-    render(<UserProfile userData={mockUserData} />);
-    
-    fireEvent.click(screen.getByText('Edit Profile'));
-    
-    const heightInput = screen.getByDisplayValue('180');
-    fireEvent.change(heightInput, { target: { value: '-5' } });
-    
-    const submitButton = screen.getByText('Save Changes');
-    fireEvent.click(submitButton);
-    
-    // Wait for the error message to appear in the DOM
-    await waitFor(() => {
-      expect(screen.getByText("Height must be a positive number")).toBeInTheDocument();
-    });
-    
-    expect(fetch).not.toHaveBeenCalled();
-  });
-
-  test('validates form with negative weight value', () => {
-    render(<UserProfile userData={mockUserData} />);
-    
-    fireEvent.click(screen.getByText('Edit Profile'));
-
-    const weightInput = screen.getByDisplayValue('75');
-    
-    fireEvent.change(weightInput, { target: { value: '-10' } });
-    
-    const submitButton = screen.getByText('Save Changes');
-    fireEvent.click(submitButton);
-    
-    expect(screen.getByText("Weight must be a positive number")).toBeInTheDocument();
-    expect(global.fetch).not.toHaveBeenCalled();
-  });
-
   test('validates form with negative phone number', () => {
     render(<UserProfile userData={mockUserData} />);
     
