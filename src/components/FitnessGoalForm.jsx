@@ -22,6 +22,12 @@ function FitnessGoalForm({ userId, onSubmit, setRefreshTrigger }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const today = new Date().toISOString().split('T')[0];
+    if (formData.startDate < today) {
+      alert("Start date cannot be before today's date.");
+      return;
+    }
+
     if (formData.startDate && formData.targetDate && formData.startDate >= formData.targetDate) {
       alert("Target date must be greater than the start date.");
       return;

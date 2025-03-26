@@ -26,7 +26,7 @@ const Register = () => {
       newErrors.username = "Username must be at least 3 characters long.";
     }
 
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    if (!/\S+@\S+\.\S+/.test(formData.email)) { 
       newErrors.email = "Invalid email format.";
     }
 
