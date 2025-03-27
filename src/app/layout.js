@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 
 export const metadata = {
-  title: "HeathSphere | Your Personal Health & Fitness Companion",
+  title: "HealthSphere | Your Personal Health & Fitness Companion",
   description: "Track your health, fitness activities, and nutrition with AI-powered recommendations",
 };
 
